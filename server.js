@@ -17,6 +17,30 @@ app.get("/", function (request, response) {
 });
 
 //START OF YOUR CODE...
+app.get('/quotes', function(request, response) {
+  response.send(quotes)
+});
+
+app.get('/quotes/random', function(request, response) {
+  response.send(pickFromArray(quotes))
+});
+
+app.get("/quotes/search", function (request, response) {
+  const term = request.query.term.toLowerCase();
+  console.log("This is the term: " + term);
+
+  const filtQuotes = quotes.filter((quote) => {
+    let wordsOfQuote = quote.quote.toLowerCase();
+    let wordsOfAuthor = quote.author.toLowerCase();
+
+    return wordsOfQuote.includes(term) || wordsOfAuthor.includes(term);
+  });
+
+  filtQuotes.length > 0
+    ? response.send(filtQuotes)
+    : response.send(`Ups! ${term} does not match any result!`);
+});
+
 
 //...END OF YOUR CODE
 
@@ -29,6 +53,7 @@ function pickFromArray(arr) {
 }
 
 //Start our server so that it listens for HTTP requests!
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+const port = 5000;
+app.listen(port, function () {
+console.log(`Server is listening on port ${port}. Ready to accept requests!`);
+}); 
